@@ -17,7 +17,7 @@ function getRepoContributors(repoOwner, repoName, cb) {
     };    
 
     request(options, function(err, result, body) {
-        var contributors = JSON.parse(body)
+        var contributors = JSON.parse(body);
         cb(err, contributors);
       
     });
@@ -29,7 +29,7 @@ function downloadImageByURL(url, filePath) {
             .on('error', function (err) {
             })
         
-            .pipe(fs.createWriteStream(filePath));
+            .pipe(fs.createWriteStream(filePath))
   }
 
 // downloadImageByURL("https://avatars2.githubusercontent.com/u/2741?v=3&s=466", "avatars/kvirani.jpg")
@@ -37,12 +37,19 @@ function downloadImageByURL(url, filePath) {
 
 
 getRepoContributors(process.argv[2], process.argv[3], function(err, result) {
-    // console.log("Errors:", err);
+
+    if (!process.argv[2] || !process.argv[3]) {
+        console.log("Error: Please enter both owner name and repository name.");
+        return;
+    }
+
+    if (err) {
+        console.log("There is an error.");
+        return;
+    }
 
     for ( var i = 0; i < result.length; i++) {
-
-        // console.log("avatar_url: " + result[i].avatar_url);
         var login = result[i].login;
-        downloadImageByURL(result[i].avatar_url, "./avatars/" + login + ".jpg")
+        downloadImageByURL(result[i].avatar_url, "./avatars/" + login + ".jpg");
     }
 });
